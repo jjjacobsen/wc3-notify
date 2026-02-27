@@ -9,8 +9,6 @@ Play a Warcraft 3 quote when `notify.py` runs.
 
 ## Setup
 
-### Notes
-
 Place your legally obtained Warcraft III sound files in `quotes/`.
 
 Put this at the top of `~/.codex/config.toml`:
@@ -19,3 +17,5 @@ Put this at the top of `~/.codex/config.toml`:
 # 🔔 Play sound when agent turn completes
 notify = ["python3", "/full/path/to/notify.py"]
 ```
+
+This works for both the Codex App and Codex CLI

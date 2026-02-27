@@ -18,7 +18,8 @@ def write_json_arg_file(root_dir, notification_arg):
         int(path.stem.removeprefix("json-arg")) for path in root_dir.glob("json-arg*.json")
     ]
     index = max(existing_indexes) + 1 if existing_indexes else 0
-    (root_dir / f"json-arg{index}.json").write_text(notification_arg)
+    formatted_notification_arg = json.dumps(json.loads(notification_arg), indent=2)
+    (root_dir / f"json-arg{index}.json").write_text(f"{formatted_notification_arg}\n")
 
 
 def is_internal_title_event(notification):

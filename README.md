@@ -18,4 +18,10 @@ Put this at the top of `~/.codex/config.toml`:
 notify = ["python3", "/full/path/to/notify.py"]
 ```
 
+## Notes
+
 This works for both the Codex App and Codex CLI
+
+For now (it will probably get fixed) there is a notification that gets emitted by the app for setting the title of the thread. `notify.py` will attempt to detect this fake notification and skip it
+
+The [Codex notification documentation](https://developers.openai.com/codex/config-advanced/#notifications) explains the JSON argument provided to notify and what is contained in the JSON

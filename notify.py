@@ -7,7 +7,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ENABLE_JSON_ARG_FILES = True
+ENABLE_JSON_ARG_FILES = False
 INTERNAL_TITLE_PROMPT_PREFIX = "You are a helpful assistant."
 
 

@@ -11,6 +11,8 @@ Play a Warcraft 3 quote from Codex hooks.
 
 Place your legally obtained Warcraft III sound files in `quotes/`.
 
+For custom clips, use `yt-dlp` to get source audio and `ffmpeg` to trim or convert it into whatever audio file you would like in `quotes/`.
+
 Enable hooks and add this to `~/.codex/config.toml`:
 
 ```toml

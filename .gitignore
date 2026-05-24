@@ -3,3 +3,5 @@ __pycache__/
 
 quotes/**
 !quotes/.gitkeep
+
+.audio-queue.lock

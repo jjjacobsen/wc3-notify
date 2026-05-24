@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Play a random Warcraft 3 quote."""
 
+import fcntl
 import json
 import random
 import subprocess
@@ -8,42 +9,37 @@ import sys
 from pathlib import Path
 
 ENABLE_JSON_ARG_FILES = False
-INTERNAL_TITLE_PROMPT_PREFIX = "You are a helpful assistant."
 
 
-def write_json_arg_file(root_dir, notification_arg):
+def write_json_arg_file(root_dir, hook_input):
     existing_indexes = [
         int(path.stem.removeprefix("json-arg")) for path in root_dir.glob("json-arg*.json")
     ]
     index = max(existing_indexes) + 1 if existing_indexes else 0
-    formatted_notification_arg = json.dumps(json.loads(notification_arg), indent=2)
-    (root_dir / f"json-arg{index}.json").write_text(f"{formatted_notification_arg}\n")
+    formatted_hook_input = json.dumps(hook_input, indent=2)
+    (root_dir / f"json-arg{index}.json").write_text(f"{formatted_hook_input}\n")
 
 
-def is_internal_title_event(notification):
-    input_messages = notification["input-messages"]
-    if len(input_messages) != 1:
-        return False
-    prompt = input_messages[0]
-    if not prompt.startswith(INTERNAL_TITLE_PROMPT_PREFIX):
-        return False
-    title_response = json.loads(notification["last-assistant-message"])
-    return isinstance(title_response, dict) and set(title_response) == {"title"}
+def read_hook_input():
+    return json.loads(sys.stdin.read())
+
+
+def play_quote(root_dir):
+    quotes_dir = root_dir / "quotes"
+    quote_path = random.choice(list(quotes_dir.glob("*.qta")))
+    lock_path = root_dir / ".audio-queue.lock"
+    with lock_path.open("w") as lock_file:
+        fcntl.flock(lock_file, fcntl.LOCK_EX)
+        subprocess.run(["afplay", str(quote_path)], check=True)
 
 
 def main():
     root_dir = Path(__file__).resolve().parent
-    notification_arg = sys.argv[1]
+    hook_input = read_hook_input()
     if ENABLE_JSON_ARG_FILES:
-        write_json_arg_file(root_dir, notification_arg)
+        write_json_arg_file(root_dir, hook_input)
 
-    notification = json.loads(notification_arg)
-    if is_internal_title_event(notification):
-        return
-
-    quotes_dir = root_dir / "quotes"
-    quote_path = random.choice(list(quotes_dir.glob("*.qta")))
-    subprocess.run(["afplay", str(quote_path)], check=True)
+    play_quote(root_dir)
 
 
 if __name__ == "__main__":

@@ -24,6 +24,16 @@ def read_hook_input():
     return json.loads(sys.stdin.read())
 
 
+def is_title_generation_stop(hook_input):
+    if hook_input["hook_event_name"] != "Stop":
+        return False
+    if hook_input["transcript_path"] is not None:
+        return False
+
+    message = json.loads(hook_input["last_assistant_message"])
+    return set(message) == {"title"}
+
+
 def play_quote(root_dir):
     quotes_dir = root_dir / "quotes"
     quote_path = random.choice(list(quotes_dir.glob("*.qta")))
@@ -38,6 +48,9 @@ def main():
     hook_input = read_hook_input()
     if ENABLE_JSON_ARG_FILES:
         write_json_arg_file(root_dir, hook_input)
+
+    if is_title_generation_stop(hook_input):
+        return
 
     play_quote(root_dir)
 

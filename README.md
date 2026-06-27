@@ -19,13 +19,6 @@ Enable hooks and add this to `~/.codex/config.toml`:
 [features]
 hooks = true
 
-[[hooks.PermissionRequest]]
-[[hooks.PermissionRequest.hooks]]
-type = "command"
-command = 'python3 "/full/path/to/notify.py"'
-timeout = 30
-statusMessage = "Playing approval sound"
-
 [[hooks.Stop]]
 [[hooks.Stop.hooks]]
 type = "command"
@@ -39,6 +32,8 @@ statusMessage = "Playing finished sound"
 Codex may ask you to review and trust the hook definition before it runs. Use the Hooks settings or `/hooks` in the CLI if it is marked untrusted
 
 The [Codex hook documentation](https://developers.openai.com/codex/hooks) explains the hook input provided on stdin
+
+The notifier intentionally uses only the `Stop` hook. `PermissionRequest` can fire repeatedly during a turn, including when approval requests are auto-approved, so using it for audio can spam sounds
 
 Codex can run a background title-generation turn for a new chat. That turn can trigger a `Stop` hook with no transcript path and a JSON assistant message like `{"title":"First chat prompt"}`. `notify.py` skips that title-generation `Stop` hook so the first real assistant response still plays a completion quote
 
